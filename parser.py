@@ -1,7 +1,7 @@
-#   Author: cat_prog
-#  Website: https://cat-prog.itch.io/
-#     Info: arser to create dictionary from string
-#Parameter convert automaticaly convert string values to variable format
+# Author: cat_prog
+#Website: https://cat-prog.itch.io/
+#   Info: parser to create dictionary from string
+#
 #License: GPL v3
 
 
