@@ -40,8 +40,6 @@ def str_bool(p):
         r=(False,p)
     return r
 
-
-
 #return dict from string
 def parse_str(p,convert=False):
     read_str=False
