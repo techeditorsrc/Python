@@ -1,8 +1,6 @@
-# Author: cat_prog
-#Website: https://cat-prog.itch.io/
-#   Info: parser to create dictionary from string
-#
-#License: GPL v3
+#  Author: cat_prog
+#    Info: parser to create dictionary from string
+# License: GPL v3
 
 def chars_in_str(p1,p2):
     c=True
