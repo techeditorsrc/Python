@@ -4,7 +4,6 @@
 #
 #License: GPL v3
 
-
 def chars_in_str(p1,p2):
     c=True
     for i in p1:
