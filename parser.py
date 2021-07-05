@@ -129,9 +129,6 @@ def parse_str(p,convert=False):
                         else:
                             value='"'+value+'"'
                     if convert:
-                        p1=value[:1]
-                        p2=value[-1:]
-                        print(p1,p2)
                         r_int=str_int(value)                       
                         r_float=str_float(value)
                         r_bool=str_bool(value)
