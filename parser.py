@@ -1,4 +1,5 @@
 #  Author: cat_prog
+#  Source:https://github.com/techeditorsrc
 #    Info: parser to create dictionary from string
 # License: GPL v3
 
