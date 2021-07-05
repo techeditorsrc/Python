@@ -1,3 +1,8 @@
+#  Author: cat_prog
+#  Source:https://github.com/techeditorsrc
+#    Info: parser to create dictionary from string
+# License: GPL v3
+
 import docx
 from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.text import WD_ALIGN_PARAGRAPH
