@@ -75,6 +75,7 @@ class resume():
         else:
             self.sections[i]['paragraphs'][j]['paragraph_text']=paragraph_text
     
+    #apply styles
     def setstyle(self,paragraph,run,name):
         font = run.font
         font_size = 10
