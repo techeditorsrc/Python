@@ -1,6 +1,6 @@
 #  Author: cat_prog
 #  Source:https://github.com/techeditorsrc
-#    Info: parser to create dictionary from string
+#    Info: resume builder
 # License: GPL v3
 
 import docx
