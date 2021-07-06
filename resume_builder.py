@@ -14,20 +14,89 @@ from docx.shared import RGBColor
 from docx.text.paragraph import Paragraph
 import os
 
-current_dir=os.getcwd()+'/'
+current_dir=os.getcwd().replace('\\','/')+'/'
+
+def int_to_hex(p,align=-1):
+    r=hex(p)[2:]
+    if align!=-1:
+        l=len(r)
+        if l<align:
+            r='0'*(align-l)+r
+    return r
+
+def rgb_to_hex(r,g,b):
+    return int_to_hex(r,align=2)+int_to_hex(g,align=2)+int_to_hex(b,align=2)
+
+def copy(p):
+    r=p
+    if isinstance(p,tuple):
+        r=[]
+        for i in p:
+            r.append(copy(i))
+        r=tuple(r)
+        return r
+    elif isinstance(p,list):
+        r=[]
+        for i in p:
+            r.append(copy(i))
+        return r
+    elif isinstance(p,dict):
+        r={}
+        for key,value in p.items():
+            r[key]=copy(value)
+        return r
+    else:
+        return r
 class resume():
+    def new_font_style(self,font_name,font_size,font_bold,font_italic,font_underline,font_color):
+        return {'name':font_name,'size':font_size,'bold':font_bold,'italic':font_italic,'underline':font_underline,'color':font_color}
+    
+    def new_paragraph_style(self,space_before,space_after):
+        return {'space_before':space_before,'space_after':space_after}
+
+    def add_param(self,style_name,param_name,params):
+        if not style_name in self.styles:
+            self.styles[style_name]={}
+        if not param_name in self.styles[style_name]:
+            self.styles[style_name][param_name]={}
+        self.styles[style_name][param_name]=params
+
+    def default_style(self):
+        style_name='default'
+        font_size=10
+        font_name='Dejavu Sans'
+        default_color=(0,0,0)
+        section_color=(65,138,183)
+        paragraph_title_color=(53,108,132)
+        name_style={'font':self.new_font_style(font_name,font_size,True,False,False,default_color),'paragraph':self.new_paragraph_style(2,2)}
+        speciality_style={'font':self.new_font_style(font_name,font_size,False,False,False,default_color),'paragraph':self.new_paragraph_style(2,2)}
+        contacts_style={'font':self.new_font_style(font_name,font_size-2,False,False,False,default_color),'paragraph':self.new_paragraph_style(2,2)}
+        link_style={'font':self.new_font_style(font_name,font_size-2,False,False,False,section_color),'paragraph':self.new_paragraph_style(2,2)}
+        section_name_style={'font':self.new_font_style(font_name,font_size,False,False,False,section_color),'paragraph':self.new_paragraph_style(2,2)}
+        paragraph_name_style={'font':self.new_font_style(font_name,font_size,False,False,False,paragraph_title_color),'paragraph':self.new_paragraph_style(2,2)}
+        paragraph_text_style={'font':self.new_font_style(font_name,font_size,False,False,False,default_color),'paragraph':self.new_paragraph_style(2,2)}
+        self.add_param(style_name,'name',name_style)
+        self.add_param(style_name,'speciality',speciality_style)
+        self.add_param(style_name,'contacts',contacts_style)
+        self.add_param(style_name,'links',link_style)
+        self.add_param(style_name,'section_name',section_name_style)
+        self.add_param(style_name,'paragraph_name',paragraph_name_style)
+        self.add_param(style_name,'paragraph_text',paragraph_text_style)
+
+    def set_current_style(self,current_style):
+        self.current_style=current_style
+
     def __init__(self,export_file_name='resume.docx'):
         self.document=docx.Document()
         self.styles={}
+        self.default_style()
+        self.current_style=''
+        self.set_current_style('default')
         self.name=''
         self.speciality=''
         self.contacts=[]
         self.sections=[]
         self.export_file_name=export_file_name
-        
-    def add_key(self,obj,key,value):
-        if not key in obj:
-            obj[key]=value
 
     def add_name(self,name,speciality):
         self.name=name
@@ -82,27 +151,17 @@ class resume():
     
     #apply styles
     def setstyle(self,paragraph,run,name):
+        style=self.styles[self.current_style][name]
         font = run.font
-        font_size = 10
-        font.size = Pt(font_size)
-        font.name = 'Dejavu Sans'
-        paragraph.paragraph_format.space_before = Pt(2)
-        paragraph.paragraph_format.space_after = Pt(2)
-        if name=='name':
-            run.bold = True
-            font.size = Pt(font_size)
-        if name=='speciality':
-            font.size = Pt(font_size)
-        if name=='contacts':
-            font.size  =Pt(font_size-2)
-        if name=='section_name':
-            font.size = Pt(font_size)
-            font.color.rgb = RGBColor(65, 138, 183)
-        if name=='paragraph_name':
-            font.size = Pt(font_size)
-            font.color.rgb = RGBColor(53, 108, 132)
-        if name=='paragraph_text':
-            font.size = Pt(font_size)
+        paragraph.paragraph_format.space_before = Pt(style['paragraph']['space_before'])
+        paragraph.paragraph_format.space_after = Pt(style['paragraph']['space_after'])
+        font_style = style['font']
+        font.name = font_style['name']
+        font.size = Pt(font_style['size'])
+        font.color.rgb = RGBColor(font_style['color'][0],font_style['color'][1],font_style['color'][2])
+        run.bold = font_style['bold']
+        run.italic = font_style['italic']
+        run.underline = font_style['underline']
 
     def w(self,n,**p):
         xml=docx.oxml.shared.OxmlElement('w:'+n)
@@ -144,7 +203,10 @@ class resume():
         paragraph = self.document.add_paragraph()
         run=paragraph.add_run(contact_name+': ')
         self.setstyle(paragraph,run,'contacts')
-        self.add_hyperlink(paragraph,contact_address,contact_address.replace("mailto:",""),'729fcf',8,'Dejavu Sans')        
+        # color = '729fcf'
+        link_style=self.styles[self.current_style]['links']['font']
+        link_color=rgb_to_hex(link_style['color'][0],link_style['color'][1],link_style['color'][2])
+        self.add_hyperlink(paragraph,contact_address,contact_address.replace("mailto:",""),link_color,link_style['size'],link_style['name'])        
     
     def render_contacts(self):
         for contact in self.contacts:
