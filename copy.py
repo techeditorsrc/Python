@@ -1,6 +1,6 @@
 #  Author: cat_prog
 #  Source:https://github.com/techeditorsrc
-#    Info: parser to create dictionary from string
+#    Info: deep copy function
 # License: GPL v3
 
 def copy(p):
