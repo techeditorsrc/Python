@@ -1,5 +1,5 @@
 #  Author: Anton Nedilko
-#   email: arcs3567@gmail.com
+#   Email: arcs3567@gmail.com
 #  Source: https://github.com/techeditorsrc
 #    Info: functions for conversion integer and r, g, b values into a hex string format
 # License: GPL v3
