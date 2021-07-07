@@ -1,5 +1,6 @@
-#  Author: cat_prog
-#  Source:https://github.com/techeditorsrc
+#  Author: Anton Nedilko
+#   Email: arcs3567@gmail.com
+#  Source: https://github.com/techeditorsrc
 #    Info: resume builder
 # License: GPL v3
 
