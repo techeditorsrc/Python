@@ -90,6 +90,7 @@ class resume():
     def __init__(self,export_file_name='resume.docx'):
         self.document=docx.Document()
         self.styles={}
+        self.param=['name','speciality','contacts','section_name','paragraph_name','paragraph_text']
         self.default_style()
         self.current_style=''
         self.set_current_style('default')
@@ -170,16 +171,27 @@ class resume():
             xml.set(docx.oxml.shared.qn('w:'+key), value)
         return xml
 
-    def add_hyperlink(self,paragraph,url,text,color,font_size,font_name):
+    def add_hyperlink(self,paragraph,url,text,color,font_size,font_name,font_bold,font_italic,font_underline):
         part = paragraph.part
         r_id = part.relate_to(url, docx.opc.constants.RELATIONSHIP_TYPE.HYPERLINK, is_external=True)
         hyperlink = docx.oxml.shared.OxmlElement('w:hyperlink')
         hyperlink.set(docx.oxml.shared.qn('r:id'), r_id)
         new_run = docx.oxml.shared.OxmlElement('w:r')
         rPr = docx.oxml.shared.OxmlElement('w:rPr')
-        if not color is None:
-            rPr.append(self.w('color',val=color))
-        rPr.append(self.w('u',val='none'))
+        rPr.append(self.w('color',val=color))
+        if font_bold:
+            rPr.append(self.w('b',val='true'))
+        else:
+            rPr.append(self.w('b',val='none'))
+
+        if font_italic:
+            rPr.append(self.w('i',val='true'))
+        else:
+            rPr.append(self.w('i',val='none'))  
+
+            rPr.append(self.w('u',val=font_underline))
+        
+
         f = self.w('rFonts',ascii=font_name,hAnsi=font_name,cs=font_name,eastAsia=font_name)
         rPr.append(f)
         f = self.w('sz',val=str(font_size*2))
@@ -207,7 +219,7 @@ class resume():
         # color = '729fcf'
         link_style=self.styles[self.current_style]['links']['font']
         link_color=rgb_to_hex(link_style['color'][0],link_style['color'][1],link_style['color'][2])
-        self.add_hyperlink(paragraph,contact_address,contact_address.replace("mailto:",""),link_color,link_style['size'],link_style['name'])        
+        self.add_hyperlink(paragraph,contact_address,contact_address.replace("mailto:",""),link_color,link_style['size'],link_style['name'],False,'single',False)        
     
     def render_contacts(self):
         for contact in self.contacts:
@@ -250,12 +262,12 @@ class resume():
         else:
             self.document.save(current_dir+self.file_name)
 
-myresume=resume()
-myresume.add_name('Name','Speciality')
-myresume.add_contact('email','email@email.com')
-myresume.add_contact('github','https://github.com')
-myresume.add_paragraph('Section 1','title','text')
-myresume.add_paragraph('Section 1','title2','text2')
-myresume.add_paragraph('Summary','Summary information','text3')
-myresume.render()
-myresume.export(current_dir+'export.docx')
+# myresume=resume()
+# myresume.add_name('Name','Profession')
+# myresume.add_contact('email','email@email.com')
+# myresume.add_contact('github','https://github.com')
+# myresume.add_paragraph('Section 1','title','text')
+# myresume.add_paragraph('Section 1','title2','text2')
+# myresume.add_paragraph('Summary','Summary information','text3')
+# myresume.render()
+# myresume.export(current_dir+'export.docx')
