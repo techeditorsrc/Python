@@ -1,5 +1,6 @@
 #  Author: Anton Nedilko
-#  Source:https://github.com/techeditorsrc
+#   Email: arcs3567@gmail.com
+#  Source: https://github.com/techeditorsrc
 #    Info: deep copy function
 # License: GPL v3
 
