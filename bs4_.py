@@ -15,7 +15,7 @@ class tags():
             s1=i.strip()
             if s1!='':
                 s1=s1.split(':')
-                r.append({'tag':s1[0],'index':s1[1]})
+                r.append({'tag':s1[0],'index':int(s1[1])})
         return r
 
     def find_all(self,tag,next_tag_index,param={}):
