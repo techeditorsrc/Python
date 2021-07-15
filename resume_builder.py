@@ -219,7 +219,7 @@ class resume():
         # color = '729fcf'
         link_style=self.styles[self.current_style]['links']['font']
         link_color=rgb_to_hex(link_style['color'][0],link_style['color'][1],link_style['color'][2])
-        self.add_hyperlink(paragraph,contact_address,contact_address.replace("mailto:",""),link_color,link_style['size'],link_style['name'],False,'single',False)        
+        self.add_hyperlink(paragraph,contact_address,contact_address.replace("mailto:",""),link_color,link_style['size'],link_style['name'],False,False,'single')        
     
     def render_contacts(self):
         for contact in self.contacts:
