@@ -43,9 +43,18 @@ class tags():
 
 def item(p,index):
     if p!=None:
-        if isinstance(p,list) or isinstance(p,dict) or isinstance(p,tuple):
+        if isinstance(p,list) or isinstance(p,tuple):
             if index>=0 and index<len(p):
                 return p[index]
+            else:
+                return None
+        elif isinstance(p,dict):
+            if index in p:
+                return p[index]
+            else:
+                return None
+        else:
+            return None
     else:
         return None
    
