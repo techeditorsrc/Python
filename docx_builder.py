@@ -263,7 +263,7 @@ class resume():
             self.document.save(current_dir+self.file_name)
 
 # myresume=resume()
-# myresume.add_name('Name','Profession')
+# myresume.add_name('Name','Company')
 # myresume.add_contact('email','email@email.com')
 # myresume.add_contact('github','https://github.com')
 # myresume.add_paragraph('Section 1','title','text')
