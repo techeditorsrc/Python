@@ -99,6 +99,8 @@ class table():
           for i in reversed(range(row_index,cl)):
             print(i)
             j["items"][i+1]=j["items"][i]
+          j["items"][row_index]=""
+        
       x=begin_column
       for i in items:
         if x<l:
@@ -106,7 +108,6 @@ class table():
           x+=1
         else:
           break
-      # self.fill_row(items,row_index,begin_column)
           
   def insert_row_by_column_names(self,row_index=0,begin_column=0,**items):
     l=len(self.columns)
@@ -122,27 +123,61 @@ class table():
           for i in reversed(range(row_index,cl)):
             print(i)
             j["items"][i+1]=j["items"][i]
+          j["items"][row_index]=""
       for key,value in items.items():
         x=self.get_column_by_name(key)
         if x:
           x["items"][row_index]=value
-      # self.fill_row_by_column_names(items,row_index,begin_column)
-            
+      
+  def copy(self,name,begin_row,end_row):
+    r3=table(name)
+    rc=self.row_count()
+    if begin_row<0:
+      r1=0
+    elif begin_row>=rc:
+      r1=rc-1
+    else:
+      r1=begin_row
+    if end_row<0:
+      r2=0
+    elif end_row>=rc:
+      r2=rc-1
+    else:
+      r2=end_row
+    if r1>=r2:
+      r=range(r1,r2+1)
+    else:
+      r1,r2=r2,r1
+      r=reversed(range(r1,r2+1))
+    rcx=0
+    for j in self.columns:
+      r3.columns.append(self.newcolumn(j["name"]))
+      if rc>0:
+        if r1>=r2:
+          r=range(r1,r2+1)
+        else:
+          r1,r2=r2,r1
+          r=reversed(range(r1,r2+1))
+        for i in r:
+           r3.columns[rcx]["items"].append(j["items"][i])
+      rcx+=1
+    return r3
+          
   def delete_row(self,index):
     if index>=0:
       for j in self.columns:
         if index<len(j["items"]):
-          del j["items"][index]
+          del j["items"][index]  
   
   def clear(self):
     for i in self.columns:
       i["items"]=[]
-  
+
 x=table(name="Table1",columns=["Column1","Column2","Column3","Column4","Column5"])
 x.add_row("A","B","C",begin_column=1)
 x.insert_row(1,2,3,row_index=0)
-print(len(x.columns))
-for i in x.columns:
+y=x.copy("",0,0)
+z=y
+print(len(z.columns))
+for i in z.columns:
   print(i["name"],i["items"])
-  
-
