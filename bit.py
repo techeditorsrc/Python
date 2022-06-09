@@ -33,26 +33,26 @@ def xor(x,y):
   return ~ (x | y)
 
 def and_list(x):
-  r=0
+  r=x[0]
   for j in x:
     r=r & j
   return r
 
 def or_list(x):
-  r=0
+  r=x[0]
   for j in x:
     r=r | j
   return r
 
 def nand_list(x):
-  r=0
+  r=x[0]
   for j in x:
     r=r & j
   r= ~ r
   return r
 
 def nor_list(x):
-  r=0
+  r=x[0]
   for j in x:
     r=r | j
   r= ~ r
