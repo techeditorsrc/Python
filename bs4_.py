@@ -1,7 +1,7 @@
 #  Author: Anton Nedilko
 #   Email: arcs3567@gmail.com
 #  Source: https://github.com/techeditorsrc
-#    Info: deep copy function
+#    Info: function for bs4
 # License: GPL v3
 
 class tags():
