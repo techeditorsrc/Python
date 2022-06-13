@@ -1,7 +1,7 @@
 #  Author: Anton Nedilko
 #   Email: arcs3567@gmail.com
 #  Source: https://github.com/techeditorsrc
-#    Info: function for bs4
+#    Info: Function for bs4
 # License: GPL v3
 
 class tags():
