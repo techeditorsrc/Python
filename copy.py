@@ -1,7 +1,7 @@
 #  Author: Anton Nedilko
 #   Email: arcs3567@gmail.com
 #  Source: https://github.com/techeditorsrc
-#    Info: deep copy function
+#    Info: Deep copy function
 # License: GPL v3
 
 def copy(p):
