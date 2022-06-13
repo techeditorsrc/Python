@@ -1,3 +1,9 @@
+#  Author: Anton Nedilko
+#   Email: arcs3567@gmail.com
+#  Source: https://github.com/techeditorsrc
+#    Info: Project manager (beta)
+# License: GPL v3
+
 class task():
   def __init__(self,name,ready=False,info=''):
     self.name=name
