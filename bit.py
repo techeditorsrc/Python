@@ -1,7 +1,7 @@
 #  Author: Anton Nedilko
 #   Email: arcs3567@gmail.com
 #  Source: https://github.com/techeditorsrc
-#    Info: bitwise functions (beta)
+#    Info: Bitwise functions (beta)
 # License: GPL v3
 
 def setbit(x,index):
