@@ -86,6 +86,12 @@ class status():
         for x in range(self.count):
             self.flag[x]=(value >> x) & 1
 
+    def read_addr(self,addr):
+        pass
+
+    def write_addr(self,addr):
+        pass
+
 class cpu6502():
     def __init__(self):
         self.a=0
