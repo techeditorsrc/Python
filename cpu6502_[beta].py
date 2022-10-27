@@ -86,12 +86,6 @@ class status():
         for x in range(self.count):
             self.flag[x]=(value >> x) & 1
 
-    def read_addr(self,addr):
-        pass
-
-    def write_addr(self,addr):
-        pass
-
 class cpu6502():
     def __init__(self):
         self.a=0
@@ -102,6 +96,12 @@ class cpu6502():
         #status flag from 7 to 0 bit
         # self.p=[0,0,0,0,0,0,0,0]
         self.p=status(8,['negative','overflow','','break','decimal','interruptdisable','zero','carry'])
+
+    def read_addr(self,addr):
+        pass
+
+    def write_addr(self,addr):
+        pass
 
 x=status(8,['negative','overflow','','break','decimal','interruptdisable','zero','carry'])
 x.set('overflow','break',7)
