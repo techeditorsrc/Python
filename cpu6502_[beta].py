@@ -76,6 +76,62 @@ class status():
         elif(flagType=='str'):
             return self.find(flag)
     
+    def is_int(self,v):
+        l=len(v)
+        r=l>0
+        if(r):
+            if(v[0]=='-'):
+                v=v[1:]
+                l-=1
+                r=(l>0)and(v.count('-')==0)
+                if(r):
+                    for x in v:
+                        if not (x in '0123456789'):
+                            r=False
+                            break
+        return r
+    
+    def is_float(self,v):
+        l=len(v)
+        r=l>0
+        if(r):
+            if(v[1]=='-'):
+                v=v[1:]
+                l-=1    
+                r=(l>0)and(v.count('-')==0)and(v.count('.')==1)
+                if(r):
+                    for x in v:
+                        if not(x in '0123456789'):
+                            r=False
+                            break
+        return r
+    
+    def is_hex(self,v):
+        v=v.replace('$','')
+        l=len(v)
+        r=(l>0)
+        if(r):
+            if(v[0]=='-'):
+                v=v[1:]
+                l-=1
+                r=(l>0)and(v.count('-')==0)
+                if(r):
+                    for x in v:
+                        if not(x in '0123456789abcdef'):
+                            r==False
+                            break
+        return r
+                
+    def is_bin(self,v):
+        l=len(v)
+        r=l>0
+        if(r):
+            for x in v:
+                if not(x in '01'):
+                    r=False
+                    break
+        return r
+        
     def toInt(self):
         r=0
         for x in range(self.count):
@@ -85,6 +141,32 @@ class status():
     def fromInt(self,value):
         for x in range(self.count):
             self.flag[x]=(value >> x) & 1
+            
+    def hex_to_int(self,v):
+        r=0
+        h='0123456789abcdef'
+        if(self.is_hex(v)):
+            if(v[0]=='$'):
+                v=v[1:]
+                for x in v:
+                    r=r<<4 | h.find(x)
+        return r
+                
+        def split_line(self,s):
+            r={'label':'','token':[],'src':s}
+            s:=s.strip()
+            x=0
+            l=len(s)
+            loop=l>0
+            cmd='label'
+            ps=''
+            while loop:
+                if(cmd=='label'):
+                    pass
+                elif(cmd=='non_str'):
+                    pass
+                elif(cmd=='str'):
+                    pass
 
 class cpu6502():
     def __init__(self):
