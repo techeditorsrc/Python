@@ -5,193 +5,158 @@
 # License: GPL v3
 
 #What did:
-#Main class, CPU 6502 structure, status class
+#Main class, CPU 6502 structure
 
 #Roadmap:
 #Parser
 
 class flag():
-    value=0
-    name=''
-    def set(self,r=True):
-        if r:
-            self.value=1
-    
-    def get(self):
-        return self.value
-    
-    def clear(self):
-        self.value=0
+    def __init__(self,flags=[]):
+        self.flags=flags
+        self.flag=[0]*len(self.flags)
 
-class status():
-    def __init__(self,flag_count,flag_names=None):
-        self.count=flag_count
-        self.flag=[]
-        for x in range(flag_count):
-            self.flag.append(flag())
-        if(flag_names):
-            c=self.count-1
-            for x in flag_names:
-                if(x!=''):
-                    setattr(self,x,c)
-                    self.flag[c].name=x
-                c=c-1
-
-    def find(self,flag_name):
-        c=self.count-1
-        for x in self.flag:
-            if(x.name==flag_name):
-                return x
-            c-=1
-        return None
-
-    def iter(self,call,flags):
-        if(len(flags)==0):
-            for x in self.flag:
-                    call(x)
-        else:
-            for x in flags:
-                flagType=type(x)
-                if(flagType==int):
-                    call(self.flag[x])
-                elif(flagType==str):
-                    call(self.find(x))
-                else:
-                    call(x)
+    def set_flag(self,index,value):
+        if index in range(len(self.flags)):
+            self.flag[index]=value
 
     def set(self,*flags):
-        def call(x):
-            x.set()
-        self.iter(call,flags)
+        l=len(self.flag)
+        if l>0:
+            for x in flags:
+                x1=type(x)
+                if x1==int:
+                    self.set_flag(x,1)
+                elif x1==str:
+                    self.set_flag(self.flags.index(x),1)
+        else:
+            for x in range(l):
+                self.flag[x]=1
 
     def clear(self,*flags):
-        def call(x):
-            x.clear()
-        self.iter(call,flags)
+        l=len(self.flag)
+        if l>0:
+            for x in flags:
+                x1=type(x)
+                if x1==int:
+                    self.set_flag(x,0)
+                elif x1==str:
+                    self.set_flag(self.flags.index(x),0)
+        else:
+            for x in range(l):
+                self.flag[x]=0
 
     def get(self,flag):
-        flagType=type(flag)
-        if(flagType=='int'):
-            return self.flag[flag]
-        elif(flagType=='str'):
-            return self.find(flag)
-    
-    def is_int(self,v):
-        l=len(v)
-        r=l>0
-        if(r):
-            if(v[0]=='-'):
-                v=v[1:]
-                l-=1
-                r=(l>0)and(v.count('-')==0)
-                if(r):
-                    for x in v:
-                        if not (x in '0123456789'):
-                            r=False
-                            break
-        return r
-    
-    def is_float(self,v):
-        l=len(v)
-        r=l>0
-        if(r):
-            if(v[1]=='-'):
-                v=v[1:]
-                l-=1    
-                r=(l>0)and(v.count('-')==0)and(v.count('.')==1)
-                if(r):
-                    for x in v:
-                        if not(x in '0123456789'):
-                            r=False
-                            break
-        return r
-    
-    def is_hex(self,v):
-        v=v.replace('$','')
-        l=len(v)
-        r=(l>0)
-        if(r):
-            if(v[0]=='-'):
-                v=v[1:]
-                l-=1
-                r=(l>0)and(v.count('-')==0)
-                if(r):
-                    for x in v:
-                        if not(x in '0123456789abcdef'):
-                            r==False
-                            break
-        return r
-                
-    def is_bin(self,v):
-        l=len(v)
-        r=l>0
-        if(r):
-            for x in v:
-                if not(x in '01'):
-                    r=False
-                    break
-        return r
-        
-    def toInt(self):
         r=0
-        for x in range(self.count):
-            r=r & (self.flag[x] << x)
+        x=type(flag)
+        l=len(self.flag)
+        if x==int:
+            if flag in range(l):
+                r=self.flag[flag]
+        elif x==str:
+            index=self.flags.index(flag)
+            if index in range(l):
+                r=self.flag[index]
+        return r
+
+    def if_flag(self,flag):
+        return self.get(flag)==1
+
+    def to_int(self):
+        r=0
+        for x in self.flag:
+            r=(r << 1)or(x)
         return r
     
-    def fromInt(self,value):
-        for x in range(self.count):
-            self.flag[x]=(value >> x) & 1
-            
-    def hex_to_int(self,v):
-        r=0
-        h='0123456789abcdef'
-        if(self.is_hex(v)):
-            if(v[0]=='$'):
-                v=v[1:]
-                for x in v:
-                    r=r<<4 | h.find(x)
-        return r
-                
-        def split_line(self,s):
-            r={'label':'','token':[],'src':s}
-            s:=s.strip()
-            x=0
-            l=len(s)
-            loop=l>0
-            cmd='label'
-            ps=''
-            while loop:
-                if(cmd=='label'):
-                    pass
-                elif(cmd=='non_str'):
-                    pass
-                elif(cmd=='str'):
-                    pass
+    def from_int(self,i):
+        l=len(self.flag)
+        self.clear()
+        for x in range(l):
+            self.flag[-1-x]=i and 1
+            i>>=1
 
 class cpu6502():
     def __init__(self):
-        self.a=0
         self.x=0
         self.y=0
-        self.pc=0
-        self.s=0
-        #status flag from 7 to 0 bit
-        # self.p=[0,0,0,0,0,0,0,0]
-        self.p=status(8,['negative','overflow','','break','decimal','interruptdisable','zero','carry'])
+        self.a=0
+        self.cmd=["ADC","AND","ASL","BCC","BCS","BEQ","BIT","BMI","BNE","BPL","BRK","BVC","BVS","CLC","CLD","CLI","CLV","CMP","CPX","CPY","DEC","DEX","DEY","EOR","INC","INX","INY","JMP","JSR","LDA","LDX","LDY","LSR","NOP","ORA","PHA","PHP","PLA","PLP","ROL","ROR","RTI","RTS","SBC","SEC","SED","SEI","STA","STX","STY","TAX","TAY","TSX","TXA","TXS","TYA"]
+        self.flag=flag(['n','v','_','b','d','i','z','c'])
+    
+    def if_carry(self):
+        return self.flag.if_flag('c')
+    
+    def if_zero(self):
+        return self.flag.if_flag('z')
 
-    def read_addr(self,addr):
-        pass
+    def is_int(self,s):
+        l=len(s)
+        r=l>0
+        if r:
+            if s[0]=='-':
+                s=s[1:]
+                l=len(s)
+                r=l>0 and s.count('-')==0
+            if r:
+                d='0123456789'
+                for x in s:
+                    if not x in d:
+                        r=False
+                        break
+        return r
 
-    def write_addr(self,addr):
-        pass
+    def is_hex(self,s):
+        s1=s.lower()
+        if s1[0]=='$':
+            s1=s1[1:]
+        r=len(s1)>0                
+        if r:
+            d='0123456789abcdef'
+            for x in s1:
+                if not x in d:
+                    r=False
+                    break
+        return r
 
-x=status(8,['negative','overflow','','break','decimal','interruptdisable','zero','carry'])
-x.set('overflow','break',7)
-s=''
-for x in reversed(x.flag):
-    if x.name=='':
-        s1='-'
-    else:
-        s1=x.name
-    s=s+f"{s1}={x.get()} "
-print(s)
+    def is_oct(self,s):
+        s1=s.lower()
+        if s1[0]=='o':
+            s1=s1[1:]
+        r=len(s1)>0
+        if r:
+            d='0123457'
+            for x in s1:
+                if not x in d:
+                    r=False
+                    break
+        return r
+
+    def is_bin(self,s):
+        s1=s.lower()
+        if s1[0]=='b':
+            s1=s1[1:]
+        r=len(s1)>0
+        if r:
+            d='01'
+            for x in s1:
+                if not x in d:
+                    r=False
+                    break
+        return r
+
+    def to_int(self,s):
+        sign=1
+        r=0
+        s1=10
+        if(s[0]=='-'):
+            sign=-1
+            s=s[1:]
+        if s[0]=='$':
+            s=s[1:]
+            s1=16
+        elif s[0]=='b':
+            s=s[1:]
+            s1=2
+        elif s[0]=='o':
+            s=s[1:]
+            s1=8
+        return int(s,s1)*sign
